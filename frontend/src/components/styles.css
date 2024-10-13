@@ -30,7 +30,10 @@ header {
     color: white;
     width: 100%;
     margin-bottom: 20px;
+    z-index: 1; /* Ensure header appears above other elements */
+    position: relative; /* Needed for z-index to work */
 }
+
 
 header h1 {
     font-size: 2rem;
@@ -185,13 +188,45 @@ button:hover {
     background-color: #f8f9fa; /* Light background color */
 }
 
+/* Register Page Styles */
+.register-page {
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    padding: 20px; /* Add padding around the container */
+}
+
+/* Movie Collage Styles */
+.movie-collage {
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
+    position: absolute; /* Positioning to fill the page */
+    top: 0;
+    left: 0;
+    overflow: hidden; /* Hide overflow */
+    display: flex; /* Flex layout */
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: center; /* Center content */
+    align-items: center; /* Center items vertically */
+    z-index: 0; /* Behind the form and header */
+}
+
+
+.collage-image {
+    width: 150px; /* Set a fixed size for the images */
+    height: auto; /* Maintain aspect ratio */
+    margin: 10px; /* Space between images */
+}
+
+/* Form Styles */
 .login-form {
-    background: white; /* Form background */
-    padding: 2rem; /* Padding around the form */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     width: 100%;
-    max-width: 400px; /* Max width for larger screens */
+    max-width: 400px; /* Limit the width of the form */
+    background-color: #fff; /* Add background for contrast */
+    padding: 20px; /* Add padding to the form */
+    border-radius: 8px; /* Round the corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    position: relative; /* Ensure it appears above the collage */
     z-index: 1; /* Bring the form above the collage */
 }
 
@@ -214,17 +249,113 @@ h2 {
     margin-top: 1rem; /* Space above the button */
 }
 
-/* Movie Collage Styles */
-.movie-collage {
-    width: 100vw; /* Full width */
-    height: 100vh; /* Full height */
-    position: absolute; /* Positioning to fill the page */
-    top: 0;
-    left: 0;
-    overflow: hidden; /* Hide overflow */
+.movie-info-container {
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping */
-    justify-content: center; /* Center content */
-    align-items: center; /* Center items vertically */
-    z-index: 0; /* Behind the form */
-}
+    flex-direction: column;
+    align-items: center; /* Center title */
+    background-color: #f5f5f5; /* Light background for contrast */
+    padding: 20px; /* Add padding for spacing */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    max-width: 1200px; /* Max width for the container */
+    margin: auto; /* Center container on the page */
+  }
+  
+  .movie-title {
+    font-size: 2.5rem; /* Larger font size for title */
+    margin-bottom: 20px; /* Space below the title */
+    text-align: center; /* Center the title */
+    color: #333; /* Dark color for the title */
+  }
+  
+  .movie-content {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space items evenly */
+    width: 100%; /* Full width */
+  }
+  
+  .movie-poster {
+    max-width: 300px; /* Set a max width for the poster */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Rounded corners */
+    margin-right: 20px; /* Space between poster and trailer */
+  }
+  
+  .trailer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the trailer heading and video */
+    margin: 0 20px; /* Space around the trailer */
+    flex-grow: 1; /* Allow trailer container to grow */
+  }
+  
+  .trailer-title {
+    font-size: 1.5rem; /* Font size for the trailer title */
+    margin-bottom: 10px; /* Space below the trailer title */
+    color: #555; /* Color for trailer title */
+  }
+  
+  .trailer-container iframe {
+    width: 100%; /* Responsive width */
+    max-width: 560px; /* Limit maximum width */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Rounded corners for the video */
+  }
+  
+  .movie-description-container {
+    background-color: #ffffff; /* White background for the description box */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding around the description */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin-top: 20px; /* Space above the description box */
+    width: 100%; /* Full width */
+    max-width: 800px; /* Max width for the description box */
+  }
+  
+  .movie-description {
+    display: flex;
+    flex-direction: column; /* Stack info vertically */
+    align-items: center; /* Center all items */
+    width: 100%; /* Full width */
+    text-align: center; /* Center text for all description */
+  }
+  
+  .overview {
+    font-size: 1rem; /* Standard font size for overview */
+    margin-bottom: 15px; /* Space below overview */
+    color: #444; /* Darker color for readability */
+  }
+  
+  .director,
+  .actors-title {
+    margin-top: 10px; /* Space above the director and actors */
+    font-size: 1.2rem; /* Slightly larger font for emphasis */
+    color: #333; /* Dark color for text */
+  }
+  
+  .actors-list {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+  }
+  
+  .actor-name {
+    margin: 5px 0; /* Space between actor names */
+    font-size: 1rem; /* Standard font size for actor names */
+    color: #555; /* Color for actor names */
+  }
+  
+  .add-to-watchlist-button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 20px; /* Padding around the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 1rem; /* Font size for the button */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+  
+  .add-to-watchlist-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  

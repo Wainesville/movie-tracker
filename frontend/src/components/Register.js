@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { registerUser } from '../api'; // Ensure this is the correct import for your API functions
+import './styles.css'; // Ensure this imports your main styles
+import MovieCollage from './MovieCollage'; // Import the MovieCollage component
 
 function Register() {
   const [username, setUsername] = useState(''); // State for username
@@ -24,34 +26,45 @@ function Register() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-        required // Make username required
-      />
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required // Make email required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required // Make password required
-      />
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display registration error */}
-      <button type="submit">Register</button>
-    </form>
+    <div className="register-page">
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit} className="login-form">
+        <div className="form-group">
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            required // Make username required
+            className="form-control" // Add form-control class for consistent styling
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            required // Make email required
+            className="form-control" // Add form-control class for consistent styling
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required // Make password required
+            className="form-control" // Add form-control class for consistent styling
+          />
+        </div>
+        {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display registration error */}
+        <button type="submit" className="btn">Register</button>
+      </form>
+      <MovieCollage /> {/* Add the movie collage here */}
+    </div>
   );
 }
 
 export default Register;
-
-
