@@ -26,6 +26,7 @@ function App() {
       <div className="App">
         <Header isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
         <Routes>
+          <Route path="/" element={<Login handleLogin={handleLogin} />} />
           <Route path="/login" element={<Login handleLogin={handleLogin} />} />
           <Route path="/movie/:id" element={<MovieInfo />} /> {/* Route for MovieInfo */}
           <Route path="/register" element={<Register />} />
