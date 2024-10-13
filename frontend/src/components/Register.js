@@ -1,47 +1,57 @@
-// src/components/Register.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import { registerUser } from '../api'; // Ensure this is the correct import for your API functions
 
 function Register() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState(''); // State for username
+  const [email, setEmail] = useState(''); // State for email
+  const [password, setPassword] = useState(''); // State for password
+  const [error, setError] = useState(''); // State for error messages
 
-  const handleRegister = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post('/api/register', { email, password });
-      if (response.data.success) {
-        alert('Registration successful!');
-      } else {
-        alert('Registration failed. Please try again.');
-      }
+      // Call the registerUser function with username, email, and password
+      await registerUser({ username, email, password });
+      alert('Registration successful! You can log in now.');
+      // Optionally reset the fields after successful registration
+      setUsername('');
+      setEmail('');
+      setPassword('');
     } catch (error) {
-      console.error(error);
-      alert('An error occurred. Please try again.');
+      // Display an error message if registration fails
+      setError('Registration failed. Please try again.'); 
     }
   };
 
   return (
-    <div className="register-page">
-      <h2>Register</h2>
-      <form onSubmit={handleRegister}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Register</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Username"
+        required // Make username required
+      />
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+        required // Make email required
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        required // Make password required
+      />
+      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display registration error */}
+      <button type="submit">Register</button>
+    </form>
   );
 }
 
 export default Register;
+
+

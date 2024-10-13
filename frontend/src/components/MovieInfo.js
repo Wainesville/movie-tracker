@@ -1,63 +1,38 @@
-// src/components/MovieInfo.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { addToWatchlist } from '../api';
+import { useParams } from 'react-router-dom';
+import { fetchMovieInfo, addToWatchlist } from '../api'; // Ensure you import both functions
 
-const API_KEY = '8feb4db25b7185d740785fc6b6f0e850'; // Move your API_KEY here
-const BASE_URL = 'https://api.themoviedb.org/3';
-
-function MovieInfo({ isLoggedIn }) {
+function MovieInfo() {
+  const { id } = useParams(); // Get the movie ID from the URL parameters
   const [movie, setMovie] = useState(null);
-  const [error, setError] = useState(null);
-  const movieId = window.location.pathname.split('/').pop(); // Extract movieId from the URL
+
+  useEffect(() => {
+    const loadMovieInfo = async () => {
+      const movieData = await fetchMovieInfo(id); // Fetch the movie data using the ID
+      setMovie(movieData);
+    };
+    loadMovieInfo();
+  }, [id]);
 
   const handleAddToWatchlist = async () => {
-    if (isLoggedIn) {
-      const success = await addToWatchlist(movie.id);
-      if (success) {
-        alert('Movie added to watchlist!');
-      } else {
-        alert('Failed to add movie to watchlist.');
-      }
-    } else {
-      alert('You need to log in to add movies to your watchlist.');
+    try {
+      await addToWatchlist(movie.id, movie.title, movie.poster_path);
+      alert('Movie added to watchlist!');
+    } catch (error) {
+      alert('You must be logged in to add movies to your watchlist.');
     }
   };
 
-  useEffect(() => {
-    const fetchMovie = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/movie/${movieId}`, {
-          params: { api_key: API_KEY },
-        });
-        setMovie(response.data);
-      } catch (error) {
-        console.error('Error fetching movie details:', error);
-        setError('Failed to fetch movie details.');
-      }
-    };
-
-    fetchMovie();
-  }, [movieId]);
-
-  if (error) {
-    return <div>{error}</div>; // Show error message if fetching fails
-  }
-
-  if (!movie) {
-    return <div>Loading movie information...</div>; // Show loading state while fetching
-  }
+  if (!movie) return <div>Loading...</div>; // Loading state
 
   return (
-    <div>
-      <h2>{movie.title}</h2>
+    <div className="movie-info">
+      <h3>{movie.title}</h3>
+      <p>{movie.overview}</p>
+      <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt={movie.title} />
       <button onClick={handleAddToWatchlist}>Add to Watchlist</button>
-      {/* Display other movie details here */}
     </div>
   );
 }
 
 export default MovieInfo;
-
-
-

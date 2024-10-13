@@ -1,46 +1,37 @@
-// src/components/TrendingMovies.js
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { fetchTrendingMovies } from '../api';
+import { fetchTrendingMovies } from '../api'; // Ensure this import is correct
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 function TrendingMovies() {
-  const [movies, setMovies] = useState([]);
-  const [error, setError] = useState(null);
+  const [trendingMovies, setTrendingMovies] = useState([]);
+  const navigate = useNavigate(); // Create a navigate function
 
   useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const trendingMovies = await fetchTrendingMovies();
-        setMovies(trendingMovies);
-      } catch (error) {
-        setError(error.message);
-      }
+    const loadTrendingMovies = async () => {
+      const movies = await fetchTrendingMovies();
+      setTrendingMovies(movies);
     };
-
-    fetchMovies();
+    loadTrendingMovies();
   }, []);
 
-  if (error) return <div>Error: {error}</div>;
-
   return (
-    <div className="trending-movies">
+    <div className="movie-list">
       <h2>Trending Movies</h2>
-      <div className="movie-list">
-        {movies.map((movie) => (
-          <Link to={`/movie/${movie.id}`} key={movie.id}>
-            <div className="movie-card">
-              <img
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
-              />
-              <h3>{movie.title}</h3>
-            </div>
-          </Link>
+      <ul>
+        {trendingMovies.map((movie) => (
+          <li key={movie.id}>
+            <img
+              src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+              alt={movie.title}
+              onClick={() => navigate(`/movie/${movie.id}`)} // Navigate to MovieInfo on click
+              style={{ cursor: 'pointer', width: '200px', height: 'auto' }} // Optional: Adjust size and cursor
+            />
+            <h3>{movie.title}</h3>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
 
 export default TrendingMovies;
-

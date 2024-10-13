@@ -1,47 +1,39 @@
-// src/components/UpcomingMovies.js
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { fetchUpcomingMovies } from '../api';
+import { fetchUpcomingMovies } from '../api'; // Ensure this import is correct
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 function UpcomingMovies() {
-  const [movies, setMovies] = useState([]);
-  const [error, setError] = useState(null);
+  const [upcomingMovies, setUpcomingMovies] = useState([]);
+  const navigate = useNavigate(); // Create a navigate function
 
   useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const upcomingMovies = await fetchUpcomingMovies();
-        setMovies(upcomingMovies);
-      } catch (error) {
-        setError(error.message);
-      }
+    const loadUpcomingMovies = async () => {
+      const movies = await fetchUpcomingMovies();
+      setUpcomingMovies(movies);
     };
-
-    fetchMovies();
+    loadUpcomingMovies();
   }, []);
 
-  if (error) return <div>Error: {error}</div>;
+  const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'; // Base URL for TMDb images
 
   return (
-    <div className="upcoming-movies">
+    <div className="movie-list">
       <h2>Upcoming Movies</h2>
-      <div className="movie-list">
-        {movies.map((movie) => (
-          <Link to={`/movie/${movie.id}`} key={movie.id}>
-            <div className="movie-card">
-              <img
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
-              />
-              <h3>{movie.title}</h3>
-            </div>
-          </Link>
+      <ul>
+        {upcomingMovies.map((movie) => (
+          <li key={movie.id}>
+            <img
+              src={`${IMAGE_BASE_URL}${movie.poster_path}`}
+              alt={movie.title}
+              onClick={() => navigate(`/movie/${movie.id}`)} // Navigate to MovieInfo on click
+              style={{ cursor: 'pointer', width: '200px', height: 'auto' }} // Optional: Adjust size and cursor
+            />
+            <h3>{movie.title}</h3>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
 
 export default UpcomingMovies;
-
-
