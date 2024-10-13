@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchWatchlist, removeFromWatchlist } from '../api';
+import './styles.css'; // Update the import to your consolidated CSS file
 
 function Watchlist() {
   const [watchlist, setWatchlist] = useState([]);
@@ -22,17 +23,17 @@ function Watchlist() {
   };
 
   return (
-    <div>
+    <div className="watchlist">
       <h2>Your Watchlist</h2>
-      <ul>
+      <div className="movie-grid">
         {watchlist.map((movie) => (
-          <li key={movie.movie_id}>
+          <div key={movie.movie_id} className="movie-card">
             <img src={`https://image.tmdb.org/t/p/w500/${movie.poster}`} alt={movie.title} />
             <h3>{movie.title}</h3>
             <button onClick={() => handleRemove(movie.movie_id)}>Remove</button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

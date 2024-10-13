@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './styles.css'; // Ensure this imports your main styles
+import MovieCollage from './MovieCollage'; // Import the movie collage component
 
 function Login({ handleLogin }) {
   const [email, setEmail] = useState('');
@@ -9,19 +11,11 @@ function Login({ handleLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Make a request to your backend login route
       const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-      
-      // Assume response contains the token and user info
       const { token, user } = response.data;
 
-      // Store the token in localStorage
       localStorage.setItem('token', token);
-
-      // Handle login state, pass the user info to parent
       handleLogin(user);
-      
-      // Optionally reset form
       setEmail('');
       setPassword('');
     } catch (err) {
@@ -30,10 +24,11 @@ function Login({ handleLogin }) {
   };
 
   return (
-    <div className="login-page d-flex justify-content-center align-items-center">
-      <form onSubmit={handleSubmit} className="w-50">
+    <div className="login-page">
+      <MovieCollage /> {/* Add the movie collage here */}
+      <form onSubmit={handleSubmit} className="login-form">
         <h2>Login</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
+        {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
         <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input

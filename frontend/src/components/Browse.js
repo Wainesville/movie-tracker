@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchGenres, fetchMoviesByGenre } from '../api';
 import { useNavigate } from 'react-router-dom';
-import './Browse.css';
+import './styles.css';
 
 function Browse() {
   const [genres, setGenres] = useState([]);
@@ -23,12 +23,10 @@ function Browse() {
     setGenreMovies(results);
   };
 
-  const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
-
   return (
     <div className="browse-page">
       <h2>Select a Genre</h2>
-      <div className="genre-buttons">
+      <div className="browse-container">
         {genres.map((genre) => (
           <button
             key={genre.id}
@@ -40,25 +38,23 @@ function Browse() {
         ))}
       </div>
 
-      <div>
-        {genreMovies.length > 0 && (
-          <div>
-            <h2>Movies in {genres.find((g) => g.id === parseInt(selectedGenre))?.name}</h2>
-            <div className="movie-grid">
-              {genreMovies.map((movie) => (
-                <div
-                  key={movie.id}
-                  className="movie-card"
-                  onClick={() => navigate(`/movie/${movie.id}`)} // Navigate to MovieInfo
-                >
-                  <img src={`${IMAGE_BASE_URL}${movie.poster_path}`} alt={movie.title} />
-                  <h3>{movie.title}</h3>
-                </div>
-              ))}
-            </div>
+      {genreMovies.length > 0 && (
+        <div>
+          <h2>Movies in {genres.find((g) => g.id === parseInt(selectedGenre))?.name}</h2>
+          <div className="movie-grid">
+            {genreMovies.map((movie) => (
+              <div
+                key={movie.id}
+                className="movie-card"
+                onClick={() => navigate(`/movie/${movie.id}`)}
+              >
+                <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+                <h3>{movie.title}</h3>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Login from './components/Login';
-import MovieInfo from './components/MovieInfo'; // Import your MovieInfo component
+import MovieInfo from './components/MovieInfo';
 import Register from './components/Register';
 import MovieSearch from './components/MovieSearch';
 import Browse from './components/Browse';
 import Watchlist from './components/WatchList';
-import TrendingMovies from './components/TrendingMovies'; // Import the component
-import UpcomingMovies from './components/UpcomingMovies'; // Import the component
+import TrendingMovies from './components/TrendingMovies';
+import UpcomingMovies from './components/UpcomingMovies';
 
-import './App.css'; // Add your styles here
+import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,13 +28,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Login handleLogin={handleLogin} />} />
           <Route path="/login" element={<Login handleLogin={handleLogin} />} />
-          <Route path="/movie/:id" element={<MovieInfo />} /> {/* Route for MovieInfo */}
+          <Route path="/movie/:id" element={<MovieInfo />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<MovieSearch />} />
           <Route path="/browse" element={<Browse />} />
           <Route path="/watchlist" element={<Watchlist />} />
-          <Route path="/trending" element={<TrendingMovies />} /> {/* Add route for trending movies */}
-          <Route path="/upcoming" element={<UpcomingMovies />} /> {/* Add route for upcoming movies */}
+          <Route path="/trending" element={<TrendingMovies />} />
+          <Route path="/upcoming" element={<UpcomingMovies />} />
         </Routes>
       </div>
     </Router>
@@ -42,4 +42,3 @@ function App() {
 }
 
 export default App;
-

@@ -1,0 +1,27 @@
+/* MovieCollage.css */
+.movie-collage {
+    position: absolute; /* Positioning to overlap with the login form */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%; /* Full height */
+    overflow: hidden; /* Hide overflow */
+    z-index: 0; /* Behind the form */
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: center; /* Center content */
+  }
+  
+  .collage-image {
+    width: 100px; /* Adjust size as needed */
+    margin: 5px;
+    opacity: 0.9; /* Slightly transparent */
+    transform: rotate(calc(10deg * (Math.random() - 0.5))); /* Random rotation */
+    transition: transform 0.3s ease; /* Smooth hover effect */
+  }
+  
+  .collage-image:hover {
+    transform: scale(1.1); /* Scale on hover */
+    z-index: 1; /* Bring to front on hover */
+  }
+  

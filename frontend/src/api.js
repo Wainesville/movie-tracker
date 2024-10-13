@@ -6,10 +6,13 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const API_SERVER_URL = 'http://localhost:5000/api'; // Your backend URL
 
 // Fetch Trending Movies
-export const fetchTrendingMovies = async () => {
+export const fetchTrendingMovies = async (page = 1) => {
   try {
     const response = await axios.get(`${BASE_URL}/trending/movie/day`, {
-      params: { api_key: API_KEY },
+      params: {
+        api_key: API_KEY,
+        page, // Pass the page number
+      },
     });
     return response.data.results;
   } catch (error) {
@@ -61,10 +64,13 @@ export const fetchGenres = async () => {
   
 
 // Fetch Upcoming Movies
-export const fetchUpcomingMovies = async () => {
+export const fetchUpcomingMovies = async (page = 1) => {
   try {
     const response = await axios.get(`${BASE_URL}/movie/upcoming`, {
-      params: { api_key: API_KEY },
+      params: {
+        api_key: API_KEY,
+        page, // Pass the page number
+      },
     });
     return response.data.results;
   } catch (error) {
@@ -177,3 +183,5 @@ export const registerUser = async (userData) => {
     throw error; // Rethrow the error for handling in the component
   }
 };
+
+
