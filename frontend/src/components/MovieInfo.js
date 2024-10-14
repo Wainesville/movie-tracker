@@ -7,17 +7,22 @@ function MovieInfo() {
   const { id } = useParams(); // Get the movie ID from the URL parameters
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState('');
+  const [error, setError] = useState(null); // State for error handling
 
   useEffect(() => {
     const loadMovieInfo = async () => {
-      const movieData = await fetchMovieInfo(id); // Fetch the movie data using the ID
-      setMovie(movieData);
+      try {
+        const movieData = await fetchMovieInfo(id); // Fetch the movie data using the ID
+        setMovie(movieData);
 
-      // Fetch the movie videos to get the trailer
-      const videos = await fetchMovieVideos(id);
-      const trailer = videos.find(video => video.type === 'Trailer'); // Find the trailer video
-      if (trailer) {
-        setTrailerKey(trailer.key); // Set the trailer key if available
+        // Fetch the movie videos to get the trailer
+        const videos = await fetchMovieVideos(id);
+        const trailer = videos.find(video => video.type === 'Trailer'); // Find the trailer video
+        if (trailer) {
+          setTrailerKey(trailer.key); // Set the trailer key if available
+        }
+      } catch (err) {
+        setError('Failed to load movie information.'); // Set error message
       }
     };
     loadMovieInfo();
@@ -32,11 +37,12 @@ function MovieInfo() {
     }
   };
 
+  if (error) return <div>{error}</div>; // Render error message if there's an error
   if (!movie) return <div>Loading...</div>; // Loading state
 
-  // Extract necessary information
-  const director = movie.credits.crew.find((member) => member.job === 'Director');
-  const topActors = movie.credits.cast.slice(0, 5); // Top five actors
+  // Extract necessary information with checks
+  const director = movie.credits?.crew.find((member) => member.job === 'Director');
+  const topActors = movie.credits?.cast.slice(0, 5) || []; // Default to empty array if undefined
   const ageGuide = movie.adult ? '18+' : 'PG-13'; // Adjust based on the adult rating
 
   return (
@@ -66,7 +72,7 @@ function MovieInfo() {
         )}
 
         {/* Movie information section */}
-        <div className="movie-description-container"> {/* New container for the description */}
+        <div className="movie-description-container">
           <div className="movie-description">
             <p className="overview">{movie.overview}</p>
             <p><strong>Runtime:</strong> {movie.runtime} minutes</p>
