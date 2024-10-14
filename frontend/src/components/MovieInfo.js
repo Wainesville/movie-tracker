@@ -1,63 +1,90 @@
-// src/components/MovieInfo.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { addToWatchlist } from '../api';
+import { useParams } from 'react-router-dom';
+import { fetchMovieInfo, addToWatchlist, fetchMovieVideos } from '../api'; // Ensure you import both functions
+import './styles.css'; // Import the CSS file for styles
 
-const API_KEY = '8feb4db25b7185d740785fc6b6f0e850'; // Move your API_KEY here
-const BASE_URL = 'https://api.themoviedb.org/3';
-
-function MovieInfo({ isLoggedIn }) {
+function MovieInfo() {
+  const { id } = useParams(); // Get the movie ID from the URL parameters
   const [movie, setMovie] = useState(null);
-  const [error, setError] = useState(null);
-  const movieId = window.location.pathname.split('/').pop(); // Extract movieId from the URL
+  const [trailerKey, setTrailerKey] = useState('');
+
+  useEffect(() => {
+    const loadMovieInfo = async () => {
+      const movieData = await fetchMovieInfo(id); // Fetch the movie data using the ID
+      setMovie(movieData);
+
+      // Fetch the movie videos to get the trailer
+      const videos = await fetchMovieVideos(id);
+      const trailer = videos.find(video => video.type === 'Trailer'); // Find the trailer video
+      if (trailer) {
+        setTrailerKey(trailer.key); // Set the trailer key if available
+      }
+    };
+    loadMovieInfo();
+  }, [id]);
 
   const handleAddToWatchlist = async () => {
-    if (isLoggedIn) {
-      const success = await addToWatchlist(movie.id);
-      if (success) {
-        alert('Movie added to watchlist!');
-      } else {
-        alert('Failed to add movie to watchlist.');
-      }
-    } else {
-      alert('You need to log in to add movies to your watchlist.');
+    try {
+      await addToWatchlist(movie.id, movie.title, movie.poster_path);
+      alert('Movie added to watchlist!');
+    } catch (error) {
+      alert('You must be logged in to add movies to your watchlist.');
     }
   };
 
-  useEffect(() => {
-    const fetchMovie = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/movie/${movieId}`, {
-          params: { api_key: API_KEY },
-        });
-        setMovie(response.data);
-      } catch (error) {
-        console.error('Error fetching movie details:', error);
-        setError('Failed to fetch movie details.');
-      }
-    };
+  if (!movie) return <div>Loading...</div>; // Loading state
 
-    fetchMovie();
-  }, [movieId]);
-
-  if (error) {
-    return <div>{error}</div>; // Show error message if fetching fails
-  }
-
-  if (!movie) {
-    return <div>Loading movie information...</div>; // Show loading state while fetching
-  }
+  // Extract necessary information
+  const director = movie.credits.crew.find((member) => member.job === 'Director');
+  const topActors = movie.credits.cast.slice(0, 5); // Top five actors
+  const ageGuide = movie.adult ? '18+' : 'PG-13'; // Adjust based on the adult rating
 
   return (
-    <div>
-      <h2>{movie.title}</h2>
-      <button onClick={handleAddToWatchlist}>Add to Watchlist</button>
-      {/* Display other movie details here */}
+    <div className="movie-info-container">
+      <h1 className="movie-title">{movie.title}</h1>
+      <div className="movie-content">
+        <img
+          className="movie-poster"
+          src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+          alt={movie.title}
+        />
+
+        {/* Centered trailer video */}
+        {trailerKey && ( // Check if a trailer exists
+          <div className="trailer-container">
+            <h3 className="trailer-title">Watch Trailer</h3>
+            <iframe
+              width="100%"
+              height="315"
+              src={`https://www.youtube.com/embed/${trailerKey}`}
+              title="Trailer"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        )}
+
+        {/* Movie information section */}
+        <div className="movie-description-container"> {/* New container for the description */}
+          <div className="movie-description">
+            <p className="overview">{movie.overview}</p>
+            <p><strong>Runtime:</strong> {movie.runtime} minutes</p>
+            <p><strong>Rating:</strong> {movie.vote_average}/10</p>
+            <p><strong>Age Guide:</strong> {ageGuide}</p>
+            <h4 className="director">Director: {director ? director.name : 'N/A'}</h4>
+            <h4 className="actors-title">Top 5 Actors:</h4>
+            <ul className="actors-list">
+              {topActors.map((actor) => (
+                <li key={actor.id} className="actor-name">{actor.name}</li>
+              ))}
+            </ul>
+            <button onClick={handleAddToWatchlist} className="add-to-watchlist-button">Add to Watchlist</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default MovieInfo;
-
-
-
