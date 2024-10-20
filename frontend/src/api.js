@@ -49,6 +49,21 @@ export const fetchMovieVideos = async (movieId) => {
     }
 };
 
+// Fetch Movie Images
+export const fetchMovieImages = async (movieId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/movie/${movieId}/images`, {
+            params: {
+                api_key: API_KEY,
+            },
+        });
+        return response.data; // Return the list of images for the movie
+    } catch (error) {
+        console.error('Error fetching movie images:', error);
+        return []; // Return an empty array if there's an error
+    }
+};
+
 // Fetch Trending Movies (with pagination)
 export const fetchTrendingMovies = async (page = 1) => {
     try {

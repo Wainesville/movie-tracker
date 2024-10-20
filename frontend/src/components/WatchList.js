@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { fetchWatchlist, removeFromWatchlist } from '../api';
 import './styles.css'; // Update the import to your consolidated CSS file
 
@@ -28,8 +29,11 @@ function Watchlist() {
       <div className="movie-grid">
         {watchlist.map((movie) => (
           <div key={movie.movie_id} className="movie-card">
-            <img src={`https://image.tmdb.org/t/p/w500/${movie.poster}`} alt={movie.title} />
-            <h3>{movie.title}</h3>
+            {/* Use Link to navigate to the MovieInfo page for the selected movie */}
+            <Link to={`/movie/${movie.movie_id}`}>
+              <img src={`https://image.tmdb.org/t/p/w500/${movie.poster}`} alt={movie.title} />
+              <h3>{movie.title}</h3>
+            </Link>
             <button onClick={() => handleRemove(movie.movie_id)}>Remove</button>
           </div>
         ))}
