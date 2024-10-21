@@ -11,15 +11,21 @@ app.use(express.json());
 // Import Routes
 const authRoutes = require('./routes/auth');
 const watchlistRoutes = require('./routes/watchlist');
+const movieRoutes = require('./routes/movieRoutes'); // Import the movie routes
+const reviewRoutes = require('./routes/reviewRoutes'); // Import the review routes
 
 // Use Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/watchlist', watchlistRoutes);
+app.use('/api/movies', movieRoutes); // Use movie routes
+app.use('/api/reviews', reviewRoutes); // Use review routes
 
+// Root route
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+// Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });

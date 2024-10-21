@@ -4,6 +4,12 @@ const API_KEY = '8feb4db25b7185d740785fc6b6f0e850';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const API_SERVER_URL = 'http://localhost:5000/api'; // Your backend URL
 
+// Helper function to deduplicate results based on ID
+const deduplicateResults = (results) => {
+    return Array.from(new Set(results.map(movie => movie.id)))
+        .map(id => results.find(movie => movie.id === id));
+};
+
 // Fetch Genres
 export const fetchGenres = async () => {
     try {
@@ -74,7 +80,7 @@ export const fetchTrendingMovies = async (page = 1) => {
             },
         });
 
-        // Fetch two pages at once to get 24 movies (20 from page 1 + 20 from page 2)
+        // Fetch the next page to get more results
         const secondPageResponse = await axios.get(`${BASE_URL}/trending/movie/day`, {
             params: {
                 api_key: API_KEY,
@@ -82,8 +88,13 @@ export const fetchTrendingMovies = async (page = 1) => {
             },
         });
 
-        // Combine both pages and return the first 24 results
-        return [...response.data.results, ...secondPageResponse.data.results].slice(0, 24);
+        // Combine both pages and deduplicate results
+        const combinedResults = [
+            ...response.data.results,
+            ...secondPageResponse.data.results,
+        ];
+
+        return deduplicateResults(combinedResults).slice(0, 24); // Return the first 24 unique results
     } catch (error) {
         console.error('Error fetching trending movies:', error);
         return [];
@@ -108,8 +119,13 @@ export const fetchUpcomingMovies = async (page = 1) => {
             },
         });
 
-        // Combine both pages and return the first 24 results
-        return [...response.data.results, ...secondPageResponse.data.results].slice(0, 24);
+        // Combine both pages and deduplicate results
+        const combinedResults = [
+            ...response.data.results,
+            ...secondPageResponse.data.results,
+        ];
+
+        return deduplicateResults(combinedResults).slice(0, 24); // Return the first 24 unique results
     } catch (error) {
         console.error('Error fetching upcoming movies:', error);
         return [];
@@ -139,7 +155,12 @@ export const fetchMoviesByGenre = async (genreId, page = 1) => {
         });
 
         // Combine both pages and return the first 24 results
-        return [...response.data.results, ...secondPageResponse.data.results].slice(0, 24);
+        const combinedResults = [
+            ...response.data.results,
+            ...secondPageResponse.data.results,
+        ];
+
+        return deduplicateResults(combinedResults).slice(0, 24); // Return the first 24 unique results
     } catch (error) {
         console.error('Error fetching movies by genre:', error);
         return [];
@@ -169,8 +190,6 @@ export const addToWatchlist = async (movieId, title, poster) => {
         console.error("No token found! Please log in.");
         return false;
     }
-
-    console.log(`Authorization: Bearer ${token}`);
 
     try {
         await axios.post(`${API_SERVER_URL}/watchlist/add`, {
@@ -228,10 +247,15 @@ export const searchMovies = async (query) => {
 export const loginUser = async (credentials) => {
     try {
         const response = await axios.post(`${API_SERVER_URL}/auth/login`, credentials);
+        
+        // Log the response to verify what you are receiving
+        console.log('Login Response:', response);
+    
         localStorage.setItem('token', response.data.token); // Store token in local storage
         return response.data;
     } catch (error) {
-        console.error('Error logging in:', error);
+        // Log error for debugging
+        console.error('Error logging in:', error.response ? error.response.data : error.message);
         throw error;
     }
 };
@@ -246,3 +270,5 @@ export const registerUser = async (userData) => {
         throw error;
     }
 };
+
+

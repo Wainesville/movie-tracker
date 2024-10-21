@@ -400,4 +400,44 @@ h2 {
     margin: 5px 0;
   }
   
+  .review-card {
+    width: 400px; /* Set the width to 400px */
+    height: 200px; /* Set the height to 200px */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space between content */
+  }
+  
+  .reviews-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap */
+    gap: 20px; /* Space between cards */
+    justify-content: center; /* Center cards */
+    margin-top: 20px; /* Add some top margin */
+  }
+  
+
+  .reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between cards */
+    margin-top: 20px; /* Space above the reviews */
+  }
+  
+  .review-card {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 400px; /* Width of the review card */
+    height: 200px; /* Height of the review card */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+
   

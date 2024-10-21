@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   fetchMovieInfo,
   addToWatchlist,
@@ -12,6 +12,7 @@ import './styles.css';
 
 function MovieInfo() {
   const { id } = useParams();
+  const navigate = useNavigate(); // Hook for navigation
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState('');
   const [inWatchlist, setInWatchlist] = useState(false);
@@ -61,6 +62,11 @@ function MovieInfo() {
     } catch (error) {
       alert('You must be logged in to modify your watchlist.');
     }
+  };
+
+  // New function to handle review button click
+  const handleReviewMovie = () => {
+    navigate(`/movie-detail/${movie.id}`); // Replace with your route for reviewing the movie
   };
 
   if (error) return <div>{error}</div>;
@@ -116,6 +122,9 @@ function MovieInfo() {
         <p><strong>Release Date:</strong> {movie.release_date}</p>
         <button onClick={handleWatchlistToggle} className="add-to-watchlist-button">
           {inWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'}
+        </button>
+        <button onClick={handleReviewMovie} className="review-movie-button">
+          Review Movie
         </button>
       </div>
 

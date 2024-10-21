@@ -1,31 +1,41 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Use navigate hook for redirection
 import axios from 'axios';
-import './styles.css'; // Ensure this imports your main styles
-import MovieCollage from './MovieCollage'; // Import the movie collage component
+import './styles.css';
+import MovieCollage from './MovieCollage';
 
 function Login({ handleLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize navigate hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-      const { token, user } = response.data;
-
+      const { token, user } = response.data; // Assuming user object contains id
+  
+      // Store the token and user ID in localStorage
       localStorage.setItem('token', token);
+      localStorage.setItem('user_id', user.id); // Store user ID
+  
+      // Call the handleLogin function with the user object
       handleLogin(user);
       setEmail('');
       setPassword('');
+  
+      // Redirect to the watchlist page after successful login
+      navigate('/watchlist');
     } catch (err) {
       setError('Login failed. Please check your credentials.');
     }
   };
+  
 
   return (
     <div className="login-page">
-      <MovieCollage /> {/* Add the movie collage here */}
+      <MovieCollage />
       <form onSubmit={handleSubmit} className="login-form">
         <h2>Login</h2>
         {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
