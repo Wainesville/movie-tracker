@@ -1,0 +1,56 @@
+.homepage {
+    padding: 20px;
+  }
+  
+  .reviews {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between reviews */
+  }
+  
+  .review-box {
+    border: 1px solid #ddd; /* Border for each review box */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px; /* Padding inside the box */
+    background-color: #f9f9f9; /* Light background color */
+    position: relative; /* For positioning the like button */
+  }
+  
+  .review-header {
+    display: flex;
+    justify-content: space-between; /* Space between username and timestamp */
+  }
+  
+  .username {
+    font-weight: bold; /* Bold username */
+  }
+  
+  .timestamp {
+    font-size: 0.9em; /* Smaller font for timestamp */
+    color: #888; /* Lighter color for timestamp */
+  }
+  
+  .review-content {
+    margin: 15px 0; /* Space around the review content */
+    text-align: center; /* Center the review */
+    font-style: italic; /* Italicize the review text */
+  }
+  
+  .review-footer {
+    display: flex;
+    justify-content: flex-end; /* Align the button to the right */
+  }
+  
+  button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* White text */
+    border: none;
+    border-radius: 4px; /* Rounded button */
+    padding: 8px 12px; /* Button padding */
+    cursor: pointer; /* Pointer on hover */
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  

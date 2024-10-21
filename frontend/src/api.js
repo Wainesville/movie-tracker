@@ -40,6 +40,8 @@ export const fetchMovieInfo = async (movieId) => {
     }
 };
 
+
+
 // Fetch Movie Videos
 export const fetchMovieVideos = async (movieId) => {
     try {
