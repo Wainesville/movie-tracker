@@ -10,20 +10,21 @@ const Homepage = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/reviews'); // Fetch all reviews
-        setReviews(response.data); // Set the fetched reviews to state
-
-        // Fetch likes for each review and update the state
+        const response = await axios.get('http://localhost:5000/api/reviews'); // Adjust if necessary to fetch specific movie reviews
+        setReviews(response.data);
+    
+        // Fetch likes for each review
         response.data.forEach(async (review) => {
           const likesResponse = await axios.get(`http://localhost:5000/api/reviews/${review.id}/likes`);
           if (likesResponse.data.likes > 0) {
-            setLikedReviews((prev) => new Set(prev).add(review.id)); // Add review to liked set
+            setLikedReviews((prev) => new Set(prev).add(review.id));
           }
         });
       } catch (err) {
         console.error('Failed to fetch reviews', err);
       }
     };
+    
 
     fetchReviews();
   }, []);
@@ -53,33 +54,32 @@ const Homepage = () => {
     <div className="homepage">
       <h2>Latest Reviews</h2>
       <div className="reviews">
-        {reviews.length > 0 ? (
-          reviews.map((review) => (
-            <div key={review.id} className="review-box">
-              <div className="review-header">
-                <span className="username">{review.username}</span>
-                <span className="timestamp">{new Date(review.created_at).toLocaleString()}</span>
-              </div>
-              {/* Movie Thumbnail and Title */}
-              <div className="movie-info">
-                <Link to={`/movie/${review.movie_id}`}> {/* Ensure movie_id is available in the review */}
-                  <img src={review.thumbnail} alt={review.movie_title} className="movie-thumbnail" /> {/* Adjust as necessary */}
-                  <span className="movie-title">{review.movie_title}</span> {/* Ensure movie_title is available in the review */}
-                </Link>
-              </div>
-              <blockquote className="review-content">"{review.content}"</blockquote>
-              <div className="review-footer">
-                <button onClick={() => handleLikeToggle(review.id)}>
-                  {likedReviews.has(review.id) ? 'Unlike' : 'Like'}
-                </button>
-                {/* Fetch the likes count for this review */}
-                <span>{review.likes || 0} likes</span>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No reviews found.</p>
-        )}
+      {reviews.length > 0 ? (
+  reviews.map((review) => (
+    <div key={review.id} className="review-box">
+      <div className="review-header">
+        <span className="username">{review.username}</span>
+        <span className="timestamp">{new Date(review.created_at).toLocaleString()}</span>
+      </div>
+      <div className="movie-info">
+        <Link to={`/movie/${review.movie_id}`}>
+          <img src={review.thumbnail} alt={review.movie_title} className="movie-thumbnail" /> {/* Ensure thumbnail is correctly rendered */}
+          <span className="movie-title">{review.movie_title}</span> {/* Display movie title */}
+        </Link>
+      </div>
+      <blockquote className="review-content">"{review.content}"</blockquote>
+      <div className="review-footer">
+        <button onClick={() => handleLikeToggle(review.id)}>
+          {likedReviews.has(review.id) ? 'Unlike' : 'Like'}
+        </button>
+        <span>{review.likes || 0} likes</span>
+      </div>
+    </div>
+  ))
+) : (
+  <p>No reviews found.</p>
+)}
+
       </div>
     </div>
   );

@@ -64,14 +64,15 @@ function MovieInfo() {
     };
 
     const handleReviewMovie = () => {
-        // Store movie details in local storage
-        localStorage.setItem('reviewMovie', JSON.stringify({
-            id: movie.id,
-            title: movie.title,
-            thumbnail: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-        }));
-        navigate(`/movie-detail/${movie.id}`);
-    };
+      if (!movie) return; // Ensure movie details are available
+      localStorage.setItem('reviewMovie', JSON.stringify({
+          id: movie.id,
+          title: movie.title,
+          thumbnail: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+      }));
+      navigate(`/movie-detail/${movie.id}`);
+  };
+  
 
     if (error) return <div>{error}</div>;
     if (!movie) return <div>Loading...</div>;

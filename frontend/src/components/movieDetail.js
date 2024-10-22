@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './styles.css';
 
 const MovieDetail = () => {
     const { movieId } = useParams();
+    const navigate = useNavigate();  // Initialize useNavigate
     const [comment, setComment] = useState('');
     const [recommendation, setRecommendation] = useState(false);
     const [reviews, setReviews] = useState([]);
@@ -12,13 +13,17 @@ const MovieDetail = () => {
 
     useEffect(() => {
         const storedMovie = JSON.parse(localStorage.getItem('reviewMovie'));
+        console.log(storedMovie);
         if (storedMovie) {
             setMovie(storedMovie);
         }
 
         const fetchReviews = async () => {
+            // Ensure movie is defined before making API call
+            if (!storedMovie) return;
+
             try {
-                const reviewsResponse = await axios.get(`http://localhost:5000/api/reviews/${movieId}`);
+                const reviewsResponse = await axios.get(`http://localhost:5000/api/reviews/${storedMovie.id}`);
                 setReviews(reviewsResponse.data);
             } catch (err) {
                 console.error('Failed to fetch reviews', err);
@@ -30,6 +35,11 @@ const MovieDetail = () => {
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
+        if (!movie) {
+            console.error('No movie data available');
+            return; // Prevent submission if movie is not set
+        }
+
         try {
             const response = await axios.post('http://localhost:5000/api/reviews', {
                 user_id: localStorage.getItem('user_id'),
@@ -41,6 +51,9 @@ const MovieDetail = () => {
             });
             setReviews([...reviews, response.data]);
             setComment('');
+
+            // Navigate to the homepage after submitting the review
+            navigate('/');  // Redirect to the homepage
         } catch (err) {
             console.error('Failed to submit comment', err);
         }
