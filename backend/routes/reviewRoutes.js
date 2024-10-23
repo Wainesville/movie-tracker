@@ -76,47 +76,71 @@ router.get('/', async (req, res) => {
 });
 
 // Like a review
-router.post('/:reviewId/like', async (req, res) => {
+// Like a review
+router.post('/:review_id/like', async (req, res) => {
     const { user_id } = req.body; // Get the user ID from the request body
-    const { reviewId } = req.params; // Get the review ID from the URL
+    const { review_id } = req.params; // Get the review ID from the URL
 
     try {
+        // Check if the user has already liked this review
+        const checkExistingLike = await db.query(
+            'SELECT * FROM review_likes WHERE review_id = $1 AND user_id = $2',
+            [review_id, user_id]
+        );
+
+        if (checkExistingLike.rows.length > 0) {
+            // If the like already exists, return a conflict response or handle it gracefully
+            return res.status(409).json({ error: 'User has already liked this review' });
+        }
+
+        // Insert a new like if it doesn't already exist
         const result = await db.query(
             'INSERT INTO review_likes (review_id, user_id) VALUES ($1, $2) RETURNING *',
-            [reviewId, user_id]
+            [review_id, user_id]
         );
-        res.status(201).json(result.rows[0]);
+        res.status(201).json(result.rows[0]);  // Send back the newly inserted like
     } catch (error) {
         console.error('Error liking review:', error);
         res.status(500).json({ error: 'Failed to like review' });
     }
 });
 
+
+
 // Unlike a review
-router.delete('/:reviewId/like', async (req, res) => {
+router.delete('/:review_id/like', async (req, res) => {
     const { user_id } = req.body; // Get the user ID from the request body
-    const { reviewId } = req.params; // Get the review ID from the URL
+    const { review_id } = req.params; // Get the review ID from the URL
 
     try {
         await db.query(
             'DELETE FROM review_likes WHERE review_id = $1 AND user_id = $2',
-            [reviewId, user_id]
+            [review_id, user_id]
         );
-        res.status(204).send(); // No content to send back
+
+        // Fetch the updated like count
+        const result = await db.query(
+            'SELECT COUNT(*) FROM review_likes WHERE review_id = $1',
+            [review_id]
+        );
+
+        // Return the updated like count
+        res.status(200).json({ likes: parseInt(result.rows[0].count) });
     } catch (error) {
         console.error('Error unliking review:', error);
         res.status(500).json({ error: 'Failed to unlike review' });
     }
 });
 
+
 // Get likes count for a review
-router.get('/:reviewId/likes', async (req, res) => {
-    const { reviewId } = req.params;
+router.get('/:review_id/likes', async (req, res) => {
+    const { review_id } = req.params;
 
     try {
         const result = await db.query(
             'SELECT COUNT(*) FROM review_likes WHERE review_id = $1',
-            [reviewId]
+            [review_id]
         );
         res.status(200).json({ likes: parseInt(result.rows[0].count) });
     } catch (error) {

@@ -13,13 +13,11 @@ const MovieDetail = () => {
 
     useEffect(() => {
         const storedMovie = JSON.parse(localStorage.getItem('reviewMovie'));
-        console.log(storedMovie);
         if (storedMovie) {
             setMovie(storedMovie);
         }
 
         const fetchReviews = async () => {
-            // Ensure movie is defined before making API call
             if (!storedMovie) return;
 
             try {
