@@ -41,7 +41,6 @@ const Homepage = () => {
         console.error('Failed to fetch reviews', err);
       }
     };
-    
 
     fetchReviews();
   }, []);
@@ -50,66 +49,60 @@ const Homepage = () => {
     const userId = localStorage.getItem('user_id'); // Ensure user_id is stored in localStorage
     
     try {
-        if (likedReviews.has(review_id)) {
-            // Unlike the review
-            await axios.delete(`http://localhost:5000/api/reviews/${review_id}/like`, { data: { user_id: userId } });
-            setLikedReviews((prev) => {
-                const newLiked = new Set(prev);
-                newLiked.delete(review_id);
-                return newLiked;
-            });
-        } else {
-            // Like the review
-            const response = await axios.post(`http://localhost:5000/api/reviews/${review_id}/like`, { user_id: userId });
-            setLikedReviews((prev) => new Set(prev).add(review_id));
-        }
+      if (likedReviews.has(review_id)) {
+        // Unlike the review
+        await axios.delete(`http://localhost:5000/api/reviews/${review_id}/like`, { data: { user_id: userId } });
+        setLikedReviews((prev) => {
+          const newLiked = new Set(prev);
+          newLiked.delete(review_id);
+          return newLiked;
+        });
+      } else {
+        // Like the review
+        const response = await axios.post(`http://localhost:5000/api/reviews/${review_id}/like`, { user_id: userId });
+        setLikedReviews((prev) => new Set(prev).add(review_id));
+      }
 
-        // Fetch the updated likes count after the change
-        const likesResponse = await axios.get(`http://localhost:5000/api/reviews/${review_id}/likes`);
-        setReviews((prevReviews) => prevReviews.map(review => 
-            review.id === review_id ? { ...review, likes: likesResponse.data.likes } : review
-        ));
+      // Fetch the updated likes count after the change
+      const likesResponse = await axios.get(`http://localhost:5000/api/reviews/${review_id}/likes`);
+      setReviews((prevReviews) => prevReviews.map(review => 
+        review.id === review_id ? { ...review, likes: likesResponse.data.likes } : review
+      ));
     } catch (err) {
-        if (err.response && err.response.status === 409) {
-            console.error('User has already liked this review');
-        } else {
-            console.error('Failed to update like status', err);
-        }
+      if (err.response && err.response.status === 409) {
+        console.error('User has already liked this review');
+      } else {
+        console.error('Failed to update like status', err);
+      }
     }
-};
+  };
 
-
-
-
-const handleCommentSubmit = async (review_id) => { // Changed from reviewId to review_id
-  console.log('Submitting comment for review ID:', review_id, 'Content:', newComment[review_id]);
+  const handleCommentSubmit = async (review_id) => {
+    console.log('Submitting comment for review ID:', review_id, 'Content:', newComment[review_id]);
     const userId = localStorage.getItem('user_id');
     if (!userId) {
       console.error('User ID not found');
       return; // Optionally show an error message
     }
-  
+
     try {
-      const response = await axios.post(`http://localhost:5000/api/comments/${review_id}/comments`, { // Update here
+      const response = await axios.post(`http://localhost:5000/api/comments/${review_id}/comments`, {
         user_id: userId,
-        content: newComment[review_id] || '' // Update here
+        content: newComment[review_id] || '' 
       });
-  
+
       // Update the comments list for this review
       setComments((prev) => ({
         ...prev,
-        [review_id]: [...(prev[review_id] || []), response.data] // Update here
+        [review_id]: [...(prev[review_id] || []), response.data]
       }));
-  
+
       // Reset the comment for this review
-      setNewComment((prev) => ({ ...prev, [review_id]: '' })); // Update here
+      setNewComment((prev) => ({ ...prev, [review_id]: '' }));
     } catch (err) {
       console.error('Failed to post comment', err);
-      // Optionally provide user feedback here
     }
-};
-
-  
+  };
 
   return (
     <div className="homepage">
@@ -118,22 +111,25 @@ const handleCommentSubmit = async (review_id) => { // Changed from reviewId to r
         {reviews.length > 0 ? (
           reviews.map((review) => (
             <div key={review.id} className="review-box">
-              <div className="review-header">
-                <span className="username">{review.username}</span>
-                <span className="timestamp">{new Date(review.created_at).toLocaleString()}</span>
-              </div>
-              <div className="movie-info">
-                <Link to={`/movie/${review.movie_id}`}>
-                  <img src={review.thumbnail} alt={review.movie_title} className="movie-thumbnail" /> {/* Ensure thumbnail is correctly rendered */}
-                  <span className="movie-title">{review.movie_title}</span> {/* Display movie title */}
-                </Link>
-              </div>
-              <blockquote className="review-content">"{review.content}"</blockquote>
-              <div className="review-footer">
-                <button onClick={() => handleLikeToggle(review.id)}>
-                  {likedReviews.has(review.id) ? 'Unlike' : 'Like'}
-                </button>
-                <span>{review.likes || 0} likes</span>
+              <div className="review-content">
+                <div className="movie-poster">
+                  <Link to={`/movie/${review.movie_id}`}>
+                    <img src={review.thumbnail} alt={review.movie_title} className="movie-thumbnail" />
+                  </Link>
+                </div>
+                <div className="review-text">
+                  <div className="review-header">
+                    <span className="username">{review.username}</span>
+                    <span className="timestamp">{new Date(review.created_at).toLocaleString()}</span>
+                  </div>
+                  <blockquote className="review-quote">"{review.content}"</blockquote>
+                  <div className="review-footer">
+                    <button onClick={() => handleLikeToggle(review.id)}>
+                      {likedReviews.has(review.id) ? 'Unlike' : 'Like'}
+                    </button>
+                    <span>{review.likes || 0} likes</span>
+                  </div>
+                </div>
               </div>
 
               {/* Comments Section */}
@@ -145,12 +141,11 @@ const handleCommentSubmit = async (review_id) => { // Changed from reviewId to r
                   </div>
                 ))}
                 <form onSubmit={(e) => { e.preventDefault(); handleCommentSubmit(review.id); }}>
-                <input
-                        type="text"
-                        value={newComment[review.id] || ''} // Ensure it accesses the right review comment
-                        onChange={(e) => setNewComment((prev) => ({ ...prev, [review.id]: e.target.value }))}
-                        placeholder="Write a comment..."
-
+                  <input
+                    type="text"
+                    value={newComment[review.id] || ''}
+                    onChange={(e) => setNewComment((prev) => ({ ...prev, [review.id]: e.target.value }))}
+                    placeholder="Write a comment..."
                   />
                   <button type="submit">Post Comment</button>
                 </form>

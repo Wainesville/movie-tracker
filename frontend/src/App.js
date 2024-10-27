@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Login from './components/Login';
+import UserInfo from './components/UserInfo'; // Import UserInfo component
 import Homepage from './components/Homepage';
-import MovieInfo from './components/MovieInfo'; // Keep this if you need it
+import MovieInfo from './components/MovieInfo';
 import Register from './components/Register';
 import MovieSearch from './components/MovieSearch';
 import Browse from './components/Browse';
@@ -42,22 +43,25 @@ function App() {
     <Router>
       <div className="App">
         <Header isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-        <Routes>
-          {/* Default route - redirect to homepage if logged in */}
-          <Route path="/" element={isLoggedIn ? <Navigate to="/homepage" /> : <Login handleLogin={handleLogin} />} />
-          <Route path="/login" element={<Login handleLogin={handleLogin} />} />
-          <Route path="/register" element={<Register />} />
-          
-          {/* Protect routes that require authentication */}
-          <Route path="/movie/:id" element={isLoggedIn ? <MovieInfo /> : <Navigate to="/login" />} />
-          <Route path="/search" element={isLoggedIn ? <MovieSearch /> : <Navigate to="/login" />} />
-          <Route path="/browse" element={isLoggedIn ? <Browse /> : <Navigate to="/login" />} />
-          <Route path="/watchlist" element={isLoggedIn ? <Watchlist /> : <Navigate to="/login" />} />
-          <Route path="/homepage" element={isLoggedIn ? <Homepage onNewPost={handleNewPost} /> : <Navigate to="/login" />} />
-          <Route path="/trending" element={isLoggedIn ? <TrendingMovies /> : <Navigate to="/login" />} />
-          <Route path="/upcoming" element={isLoggedIn ? <UpcomingMovies /> : <Navigate to="/login" />} />
-          <Route path="/movie-detail/:movieId" element={isLoggedIn ? <MovieDetail /> : <Navigate to="/login" />} /> {/* New route for MovieDetail */}
-        </Routes>
+        <div className="body-content"> {/* Add this div to separate the header and body */}
+          <Routes>
+            {/* Default route - redirect to homepage if logged in */}
+            <Route path="/" element={isLoggedIn ? <Navigate to="/homepage" /> : <Login handleLogin={handleLogin} />} />
+            <Route path="/login" element={<Login handleLogin={handleLogin} />} />
+            <Route path="/register" element={<Register />} />
+            
+            {/* Protect routes that require authentication */}
+            <Route path="/user-info" element={isLoggedIn ? <UserInfo /> : <Navigate to="/login" />} /> {/* Add UserInfo route */}
+            <Route path="/movie/:id" element={isLoggedIn ? <MovieInfo /> : <Navigate to="/login" />} />
+            <Route path="/search" element={isLoggedIn ? <MovieSearch /> : <Navigate to="/login" />} />
+            <Route path="/browse" element={isLoggedIn ? <Browse /> : <Navigate to="/login" />} />
+            <Route path="/watchlist" element={isLoggedIn ? <Watchlist /> : <Navigate to="/login" />} />
+            <Route path="/homepage" element={isLoggedIn ? <Homepage onNewPost={handleNewPost} /> : <Navigate to="/login" />} />
+            <Route path="/trending" element={isLoggedIn ? <TrendingMovies /> : <Navigate to="/login" />} />
+            <Route path="/upcoming" element={isLoggedIn ? <UpcomingMovies /> : <Navigate to="/login" />} />
+            <Route path="/movie-detail/:movieId" element={isLoggedIn ? <MovieDetail /> : <Navigate to="/login" />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
